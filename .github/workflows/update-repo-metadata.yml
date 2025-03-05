@@ -1,0 +1,39 @@
+name: Update Repository Metadata
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/update-repo-metadata.yml"
+  workflow_dispatch:
+
+jobs:
+  update-metadata:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup GitHub CLI
+        run: |
+          gh auth setup-git
+          gh auth status
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Repository Description
+        run: |
+          gh repo edit ${{ github.repository }} \
+            --description "A simple interactive music creation game built with React and Tone.js. Create and play back melodies using keyboard controls."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Repository Topics
+        run: |
+          gh repo edit ${{ github.repository }} \
+            --add-topic "react,vite,music,game,tone-js,web-audio,interactive,melody,piano,keyboard-controls"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
